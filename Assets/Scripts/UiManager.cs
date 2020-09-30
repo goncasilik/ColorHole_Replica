@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEditor;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class UiManager : MonoBehaviour
 {
@@ -16,6 +17,11 @@ public class UiManager : MonoBehaviour
     [SerializeField] TMP_Text currentLevelText;
     [SerializeField] Image progressFillImage;
 
+    [Space]
+    [SerializeField] TMP_Text levelCompletedText;
+
+    [Space]
+    [SerializeField] Image fadePanel;
 
     void Awake()
     {
@@ -27,6 +33,7 @@ public class UiManager : MonoBehaviour
 
     private void Start()
     {
+        FadeAtStart();
         progressFillImage.fillAmount = 0f;
         SetLevelProgressText();
     }
@@ -42,6 +49,18 @@ public class UiManager : MonoBehaviour
     public void UpdateLevelProgress()
     {
         float val = 1f - ((float)Level.instance.objectsInScene / Level.instance.totalObjects);
-        progressFillImage.fillAmount = val;
+        progressFillImage.DOFillAmount(val, .4f);
+    }
+
+   //----------
+
+    public void ShowLevelCompletedUI ()
+    {
+        levelCompletedText.DOFade(1f, .6f).From(0f);
+    }
+
+    public void FadeAtStart()
+    {
+        fadePanel.DOFade(0f, 1.3f).From(1f);
     }
 }
