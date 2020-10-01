@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class HoleMovement : MonoBehaviour
 {
-    // Hole mesh
     [SerializeField] MeshFilter meshFilter;
     [SerializeField] MeshCollider meshCollider;
 
-    // Hole vertices radius
     [SerializeField] Vector2 moveLimits;
     [SerializeField] float radius;
     [SerializeField] Transform holeCenter;
@@ -18,7 +14,7 @@ public class HoleMovement : MonoBehaviour
     [SerializeField] float moveSpeed;
 
     Mesh mesh;
-    List<int> holeVertices;
+    List<int> holeVerticesIndexes;
     List<Vector3> offsets;
     int holeVerticesCount;
 
@@ -30,26 +26,21 @@ public class HoleMovement : MonoBehaviour
         Game.isMoving = false;
         Game.isGameover = false;
 
-        holeVertices = new List<int>(); // holeVerticesIndexes
-        offsets = new List<Vector3>(); // holeVertices
+        holeVerticesIndexes = new List<int>();
+        offsets = new List<Vector3>();
 
         mesh = meshFilter.mesh;
 
-        // Find Hole vertices on the mesh
         FindHoleVertices();
     }
 
-    // Update is called once per frame
     void Update()
     {
         Game.isMoving = Input.GetMouseButton(0);
 
-        if(!Game.isGameover && Game.isMoving)
+        if (!Game.isGameover && Game.isMoving)
         {
-            // Move hole center
             MoveHole();
-
-            // Update hole vertices
             UpdateHoleVerticesPosition();
         }
     }
@@ -77,12 +68,12 @@ public class HoleMovement : MonoBehaviour
     void UpdateHoleVerticesPosition()
     {
         Vector3[] vertices = mesh.vertices;
+        
         for (int i = 0; i < holeVerticesCount; i++)
         {
-            vertices[holeVertices[i]] = holeCenter.position + offsets[i]; // vertices[holeVerticesIndexes[i]] = holeVertices[i];
+            vertices[holeVerticesIndexes[i]] = holeCenter.position + offsets[i];
         }
 
-        // update mesh
         mesh.vertices = vertices;
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
@@ -96,17 +87,11 @@ public class HoleMovement : MonoBehaviour
 
             if (distance < radius)
             {
-                holeVertices.Add(i);
-                offsets.Add(mesh.vertices[i] - holeCenter.position); // holeVertices.Add(mesh.vertices[i]);
+                holeVerticesIndexes.Add(i);
+                offsets.Add(mesh.vertices[i] - holeCenter.position);
             }
         }
 
-        holeVerticesCount = holeVertices.Count;
-    }
-    
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(holeCenter.position, radius);
+        holeVerticesCount = holeVerticesIndexes.Count;
     }
 }
