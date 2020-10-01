@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 using DG.Tweening;
 
 public class UndergroundCollision : MonoBehaviour
@@ -18,12 +15,8 @@ public class UndergroundCollision : MonoBehaviour
                 UiManager.instance.UpdateLevelProgress();
                 Destroy(other.gameObject);
 
-                // check 
-
                 if (Level.instance.objectsInScene == 0)
                 {
-                    // no more objects to collect
-
                     UiManager.instance.ShowLevelCompletedUI();
                     Level.instance.PlayWinFx();
 
@@ -33,15 +26,13 @@ public class UndergroundCollision : MonoBehaviour
             if (tag.Equals("Obstacle"))
             {
                 Game.isGameover = true;
-                Camera.main.transform.DOShakePosition(1f, .2f, 20, 90f)
+                Camera.main.transform.DOShakePosition(3f, .2f, 20, 90f)
                     .OnComplete(() =>
                     {
 
                     });
 
                 Level.instance.RestartLevel();
-
-                //restart level
             }
         }
     }
